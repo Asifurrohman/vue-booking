@@ -1,21 +1,14 @@
 <template>
     <template v-if="error">
-        <SectionCard>
-            <div class="space-y-4 items-center flex flex-col">
-                <div class="text-red-500">
-                    Could not load events at the moment. Please Try Again
-                </div>
-                <div>
-                    <RoundButton @click="refreshPage()">Retry now</RoundButton>
-                </div>
-            </div>
-        </SectionCard>
+        <ErrorCard :retry="refreshPage">
+            Could not load events at the moment. Please Try Again
+        </ErrorCard>
     </template>
     <template v-else>
         <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <template v-if="!loading">
                 <template v-if="events.length">
-                    <EventCard v-for="event in events" v-bind:key="event.id" @register="$emit('register', event)" :title="event.title" :eventDate="event.date" :description="event.description"/>
+                    <EventCard v-for="event in events" v-bind:key="event.id" @register="handleRegistration(event)" :title="event.title" :eventDate="event.date" :description="event.description"/>
                 </template>
                 <template v-else>
                     <div class="col-span-2 text-center text-gray-500">
@@ -36,15 +29,18 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
+import useBookings from '@/composables/useBookings'
+
 import EventCard from '@/components/EventCard.vue'
 import LoadingEventCard from '@/components/LoadingEventCard.vue'
-import RoundButton from './RoundButton.vue'
-import SectionCard from './SectionCard.vue'
+import ErrorCard from './ErrorCard.vue'
 // import { router } from 'json-server'
 
 defineEmits([
 'register'
 ])
+
+const { handleRegistration } = useBookings
 
 const events = ref([])
 const loading = ref(false)

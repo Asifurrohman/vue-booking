@@ -29,13 +29,5 @@
       "location": "Convention Center, Downtown"
     }
   ],
-  "bookings": [
-    {
-      "id": "1733335146836",
-      "userId": 1,
-      "eventId": "3",
-      "eventTitle": "PHP Conference 2022",
-      "status": "confirmed"
-    }
-  ]
+  "bookings": []
 }
