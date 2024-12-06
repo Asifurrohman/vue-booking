@@ -1,14 +1,7 @@
 <template>
     <h1 class="text-4xl font-medium">Event Booking App</h1>
     <h2 class="text-2xl font-medium">All Events</h2>
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <template v-if="!eventsLoading">
-            <EventCard v-for="event in events" v-bind:key="event.id" @register="handleRegistration(event)" :title="event.title" :eventDate="event.date" :description="event.description"/>
-        </template>
-        <template v-else>
-            <LoadingEventCard v-for="i in 4" v-bind:key="i"/>
-        </template>
-    </section>
+    <EventList @register="handleRegistration($event)"/>
     <h2 class="text-2xl font-medium">Your Bookings</h2>
     <section class="grid grid-cols-1 gap-4">
         <template v-if="!bookingsLoading">
@@ -21,29 +14,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-import LoadingEventCard from '@/components/LoadingEventCard.vue'
-import LoadingBookingItem from '@/components/LoadingBookingItem.vue'
-import EventCard from '@/components/EventCard.vue'
 import BookingItem from '@/components/BookingItem.vue'
-
-const events = ref([])
-const eventsLoading = ref(false)
+import LoadingBookingItem from '@/components/LoadingBookingItem.vue'
+import EventList from '@/components/EventList.vue'
 
 const bookings = ref([])
 const bookingsLoading = ref(false)
-
-const fetchEvents = async () => {
-    eventsLoading.value = true
-    try{
-        const response = await axios.get('http://localhost:3001/events')
-        events.value = response.data
-    } finally {
-        eventsLoading.value = false
-    }
-}
 
 const fetchBookings = async () => {
     bookingsLoading.value = true
@@ -108,7 +87,6 @@ const cancelBooking = async (bookingId) => {
 }
 
 onMounted(() => {
-    fetchEvents(),
     fetchBookings()
 })
 </script>
